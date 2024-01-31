@@ -25,6 +25,9 @@ const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
 
 module.exports = defineConfig({
   base: "./",
+  server: {
+    open: './examples/index.html',
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
