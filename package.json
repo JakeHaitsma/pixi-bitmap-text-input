@@ -1,6 +1,5 @@
 {
   "name": "pixi-bitmap-text-input",
-  "private": true,
   "version": "0.0.1",
   "main": "./dist/pixi-bitmap-text-input.cjs",
   "module": "./dist/pixi-bitmap-text-input.mjs",
@@ -10,6 +9,9 @@
       "import": "./dist/pixi-bitmap-text-input.mjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "types": "./dist/pixi-bitmap-text-input.d.ts",
   "scripts": {
     "dev": "vite --host",
@@ -23,6 +25,9 @@
     "format": "npm run format:scripts && npm run format:styles",
     "prepare": "husky",
     "uninstall-husky": "npm uninstall husky --no-save && git config --unset core.hooksPath && npx rimraf .husky"
+  },
+  "peerDependencies": {
+    "pixi.js": "^7"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.6.0",
@@ -38,6 +43,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "husky": "^9.0.7",
     "lint-staged": "^15.2.0",
+    "pixi.js": "^7.4.0",
     "postcss": "^8.4.33",
     "postcss-scss": "^4.0.9",
     "prettier": "^3.2.4",
