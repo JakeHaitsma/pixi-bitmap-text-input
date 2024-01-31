@@ -1,16 +1,16 @@
 {
-  "name": "vite-vanilla-ts-lib-starter",
+  "name": "pixi-bitmap-text-input",
   "private": true,
-  "version": "0.0.2",
-  "main": "./dist/vite-vanilla-ts-lib-starter.cjs",
-  "module": "./dist/vite-vanilla-ts-lib-starter.mjs",
+  "version": "0.0.1",
+  "main": "./dist/pixi-bitmap-text-input.cjs",
+  "module": "./dist/pixi-bitmap-text-input.mjs",
   "exports": {
     ".": {
-      "require": "./dist/vite-vanilla-ts-lib-starter.cjs",
-      "import": "./dist/vite-vanilla-ts-lib-starter.mjs"
+      "require": "./dist/pixi-bitmap-text-input.cjs",
+      "import": "./dist/pixi-bitmap-text-input.mjs"
     }
   },
-  "types": "./dist/vite-vanilla-ts-lib-starter.d.ts",
+  "types": "./dist/pixi-bitmap-text-input.d.ts",
   "scripts": {
     "dev": "vite --host",
     "build": "rimraf dist && tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
@@ -21,10 +21,12 @@
     "format:scripts": "prettier . --write",
     "format:styles": "stylelint ./**/*.{css,scss} --fix",
     "format": "npm run format:scripts && npm run format:styles",
-    "prepare": "husky install && husky set .husky/pre-commit 'npx lint-staged' && git add .husky/pre-commit",
+    "prepare": "husky",
     "uninstall-husky": "npm uninstall husky --no-save && git config --unset core.hooksPath && npx rimraf .husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
     "@types/jsdom": "^21.1.6",
     "@types/node": "^20.11.5",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
@@ -34,7 +36,7 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "husky": "^8.0.3",
+    "husky": "^9.0.7",
     "lint-staged": "^15.2.0",
     "postcss": "^8.4.33",
     "postcss-scss": "^4.0.9",
