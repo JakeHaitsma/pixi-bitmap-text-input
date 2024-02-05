@@ -1,8 +1,11 @@
 @font-face {
   font-family: "Foxley 816";
-  src: url("fonts/Foxley816/ttf/Foxley816.ttf");
+  src:
+    url("./fonts/Foxley816/web/Foxley816.woff2") format("woff2"),
+    url("./fonts/Foxley816/web/Foxley816.woff") format("woff");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 body {
@@ -15,8 +18,4 @@ canvas {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.text {
-  font-family: "Foxley 816";
 }

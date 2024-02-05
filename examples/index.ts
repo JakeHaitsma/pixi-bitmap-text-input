@@ -14,9 +14,20 @@ async function init() {
     view: canvas,
   });
 
-  const bitmapTextInput = new BitmapTextInput("Lorem ipsum dolor sit amet.", {
-    fontName: "Foxley816",
-  });
+  const bitmapTextInput = new BitmapTextInput(
+    "Lorem ipsum dolor sit amet.",
+    {
+      fontName: "Foxley816",
+      maxWidth: 300,
+    },
+    {
+      color: "white",
+      fontFamily: "'Foxley 816'",
+      fontSize: "16px",
+      marginTop: "-2px",
+      marginRight: "-2px",
+    }
+  );
   bitmapTextInput.x = Math.round(150);
   bitmapTextInput.y = Math.round(150);
 
