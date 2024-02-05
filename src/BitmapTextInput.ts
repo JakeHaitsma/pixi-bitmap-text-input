@@ -1,5 +1,11 @@
 import * as PIXI from "pixi.js";
 
+interface IBitmapTextInputOptions {
+  multiline?: boolean;
+  onKeyDown?: (event: KeyboardEvent) => void;
+  onKeyUp?: (event: KeyboardEvent) => void;
+}
+
 export class BitmapTextInput extends PIXI.Container {
   constructor(
     text: string,
@@ -10,13 +16,14 @@ export class BitmapTextInput extends PIXI.Container {
     }: {
       bitmapTextStyle?: Partial<PIXI.IBitmapTextStyle & { multiline: boolean }>;
       domInputStyle?: Partial<CSSStyleDeclaration>;
-      options?: { multiline?: boolean };
+      options?: IBitmapTextInputOptions;
     } = {}
   ) {
     super();
 
-    this.bitmapText = new PIXI.BitmapText(text, bitmapTextStyle);
+    this.options = options;
 
+    this.bitmapText = new PIXI.BitmapText(text, bitmapTextStyle);
     this.addChild(this.bitmapText);
 
     this.domInput = options.multiline
@@ -33,7 +40,6 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.style.background = "none";
     this.domInput.style.resize = "none";
     this.domInput.style.overflow = "hidden";
-
     Object.assign(this.domInput.style, domInputStyle);
 
     // Bind events before adding listeners so listeners can be cleaned by reference on destroy.
@@ -42,6 +48,8 @@ export class BitmapTextInput extends PIXI.Container {
     this.onInput = this.onInput.bind(this);
     this.onFocused = this.onFocused.bind(this);
     this.onBlurred = this.onBlurred.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
 
     // Blur by default
     this.onBlurred();
@@ -71,6 +79,8 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.addEventListener("input", this.onInput);
     this.domInput.addEventListener("focus", this.onFocused);
     this.domInput.addEventListener("blur", this.onBlurred);
+    this.domInput.addEventListener("keydown", this.onKeyDown);
+    this.domInput.addEventListener("keyup", this.onKeyUp);
   }
 
   private removeListeners() {
@@ -79,6 +89,20 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.removeEventListener("input", this.onInput);
     this.domInput.removeEventListener("focus", this.onFocused);
     this.domInput.removeEventListener("blur", this.onBlurred);
+    this.domInput.removeEventListener("keydown", this.onKeyDown);
+    this.domInput.removeEventListener("keyup", this.onKeyUp);
+  }
+
+  private onKeyDown(event: Event) {
+    if (typeof this.options.onKeyDown === "function") {
+      this.options.onKeyDown(event as KeyboardEvent);
+    }
+  }
+
+  private onKeyUp(event: Event) {
+    if (typeof this.options.onKeyUp === "function") {
+      this.options.onKeyUp(event as KeyboardEvent);
+    }
   }
 
   private onInput() {
@@ -140,4 +164,5 @@ export class BitmapTextInput extends PIXI.Container {
     | { left: number; top: number; width: number; height: number }
     | undefined;
   private lastKnownVisible: boolean | undefined;
+  private options: IBitmapTextInputOptions;
 }
