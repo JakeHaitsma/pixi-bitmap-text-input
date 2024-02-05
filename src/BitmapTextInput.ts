@@ -3,8 +3,15 @@ import * as PIXI from "pixi.js";
 export class BitmapTextInput extends PIXI.Container {
   constructor(
     text: string,
-    private bitmapTextStyle: Partial<PIXI.IBitmapTextStyle> = {},
-    domInputStyle: Partial<CSSStyleDeclaration> = {}
+    {
+      bitmapTextStyle = {},
+      domInputStyle = {},
+      options = {},
+    }: {
+      bitmapTextStyle?: Partial<PIXI.IBitmapTextStyle & { multiline: boolean }>;
+      domInputStyle?: Partial<CSSStyleDeclaration>;
+      options?: { multiline?: boolean };
+    } = {}
   ) {
     super();
 
@@ -12,13 +19,13 @@ export class BitmapTextInput extends PIXI.Container {
 
     this.addChild(this.bitmapText);
 
-    this.domInput = this.isMultiline
+    this.domInput = options.multiline
       ? document.createElement("textarea")
       : document.createElement("input");
     this.domInput.value = text;
     this.domInput.style.position = "absolute";
     this.domInput.style.width =
-      (this.bitmapTextStyle.maxWidth ?? this.bitmapText.width) + "px";
+      (bitmapTextStyle.maxWidth ?? this.bitmapText.width) + "px";
     this.domInput.style.border = "none";
     this.domInput.style.padding = "0";
     this.domInput.style.margin = "0";
@@ -125,10 +132,6 @@ export class BitmapTextInput extends PIXI.Container {
 
   private handleRemoved() {
     document.body.removeChild(this.domInput);
-  }
-
-  private get isMultiline() {
-    return this.bitmapTextStyle.maxWidth !== undefined;
   }
 
   private bitmapText: PIXI.BitmapText;
