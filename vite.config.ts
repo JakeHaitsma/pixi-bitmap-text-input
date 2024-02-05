@@ -41,6 +41,7 @@ module.exports = defineConfig({
     }
   },
   test: {
-
+    environment: "jsdom",
+    setupFiles: ['@vitest/web-worker'],
   }
 });
