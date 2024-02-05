@@ -1,6 +1,6 @@
 {
   "name": "pixi-bitmap-text-input",
-  "version": "0.0.1",
+  "version": "0.0.0-managed-by-semantic-release",
   "author": {
     "name": "Jake Haitsma",
     "email": "jakehaitsma@proton.me",
@@ -55,6 +55,7 @@
     "postcss-scss": "^4.0.9",
     "prettier": "^3.2.4",
     "rimraf": "^5.0.5",
+    "semantic-release": "^23.0.0",
     "stylelint": "^16.2.0",
     "stylelint-config-recommended": "^14.0.0",
     "stylelint-config-sass-guidelines": "^11.0.0",
