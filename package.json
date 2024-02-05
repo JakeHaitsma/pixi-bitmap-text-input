@@ -27,7 +27,7 @@
     "uninstall-husky": "npm uninstall husky --no-save && git config --unset core.hooksPath && npx rimraf .husky"
   },
   "peerDependencies": {
-    "pixi.js": "^7"
+    "pixi.js": "^5"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.6.0",
