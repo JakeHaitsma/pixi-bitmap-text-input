@@ -37,8 +37,8 @@ export class BitmapTextInput extends PIXI.Container {
     Object.assign(this.domInput.style, domInputStyle);
 
     // Bind events before adding listeners so listeners can be cleaned by reference on destroy.
-    this.handleAdded = this.handleAdded.bind(this);
-    this.handleRemoved = this.handleRemoved.bind(this);
+    this.onAdded = this.onAdded.bind(this);
+    this.onRemoved = this.onRemoved.bind(this);
     this.onInput = this.onInput.bind(this);
     this.onFocused = this.onFocused.bind(this);
     this.onBlurred = this.onBlurred.bind(this);
@@ -66,16 +66,16 @@ export class BitmapTextInput extends PIXI.Container {
   }
 
   private addListeners() {
-    this.on("added", this.handleAdded);
-    this.on("removed", this.handleRemoved);
+    this.on("added", this.onAdded);
+    this.on("removed", this.onRemoved);
     this.domInput.addEventListener("input", this.onInput);
     this.domInput.addEventListener("focus", this.onFocused);
     this.domInput.addEventListener("blur", this.onBlurred);
   }
 
   private removeListeners() {
-    this.off("added", this.handleAdded);
-    this.off("removed", this.handleRemoved);
+    this.off("added", this.onAdded);
+    this.off("removed", this.onRemoved);
     this.domInput.removeEventListener("input", this.onInput);
     this.domInput.removeEventListener("focus", this.onFocused);
     this.domInput.removeEventListener("blur", this.onBlurred);
@@ -126,11 +126,11 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.style.top = `${canvasTop + bitmapTextTop}px`;
   }
 
-  private handleAdded() {
+  private onAdded() {
     document.body.appendChild(this.domInput);
   }
 
-  private handleRemoved() {
+  private onRemoved() {
     document.body.removeChild(this.domInput);
   }
 
