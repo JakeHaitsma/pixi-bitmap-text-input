@@ -3,7 +3,8 @@ import * as PIXI from "pixi.js";
 export class BitmapTextInput extends PIXI.Container {
   constructor(
     text: string,
-    private bitmapTextStyle: Partial<PIXI.IBitmapTextStyle> = {}
+    private bitmapTextStyle: Partial<PIXI.IBitmapTextStyle> = {},
+    domInputStyle: Partial<CSSStyleDeclaration> = {}
   ) {
     super();
 
@@ -16,10 +17,19 @@ export class BitmapTextInput extends PIXI.Container {
       : document.createElement("input");
     this.domInput.value = text;
     this.domInput.style.position = "absolute";
-    this.domInput.style.width = this.bitmapText.width + "px";
+    this.domInput.style.width =
+      (this.bitmapTextStyle.maxWidth ?? this.bitmapText.width) + "px";
+    this.domInput.style.border = "none";
+    this.domInput.style.padding = "0";
+    this.domInput.style.margin = "0";
+    this.domInput.style.outline = "none";
+    this.domInput.style.background = "none";
+    this.domInput.style.resize = "none";
+    this.domInput.style.overflow = "hidden";
 
-    // Bind events before adding listeners so listeners can be cleaned by
-    // reference on destroy.
+    Object.assign(this.domInput.style, domInputStyle);
+
+    // Bind events before adding listeners so listeners can be cleaned by reference on destroy.
     this.handleAdded = this.handleAdded.bind(this);
     this.handleRemoved = this.handleRemoved.bind(this);
     this.onInput = this.onInput.bind(this);
@@ -32,11 +42,18 @@ export class BitmapTextInput extends PIXI.Container {
     this.addListeners();
   }
 
-  get text() {
+  public set inert(value: boolean) {
+    this.domInput.inert = value;
+    if (value) {
+      this.onBlurred();
+    }
+  }
+
+  public get text() {
     return this.domInput.value;
   }
 
-  destroy() {
+  public destroy() {
     super.destroy();
     this.removeListeners();
   }
