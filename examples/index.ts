@@ -24,8 +24,8 @@ async function init() {
       color: "white",
       fontFamily: "'Foxley 816'",
       fontSize: "16px",
-      marginTop: "-2px",
-      marginRight: "-2px",
+      lineHeight: "16px",
+      marginTop: "-5px",
     }
   );
   bitmapTextInput.x = Math.round(150);
