@@ -27,6 +27,7 @@ module.exports = defineConfig({
   base: "./",
   server: {
     open: './examples/index.html',
+    port: 7777,
   },
   build: {
     lib: {
