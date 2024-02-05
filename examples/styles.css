@@ -1,11 +1,22 @@
-/* reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@font-face {
+  font-family: "Foxley 816";
+  src: url("fonts/Foxley816/ttf/Foxley816.ttf");
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
   background-color: #0d1116;
   color: #fff;
+}
+
+canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.text {
+  font-family: "Foxley 816";
 }
