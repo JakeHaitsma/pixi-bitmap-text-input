@@ -57,6 +57,11 @@ export class BitmapTextInput extends PIXI.Container {
     this.addListeners();
   }
 
+  public set text(value: string) {
+    this.domInput.value = value;
+    this.bitmapText.text = value;
+  }
+
   public set inert(value: boolean) {
     this.domInput.inert = value;
     if (value) {
