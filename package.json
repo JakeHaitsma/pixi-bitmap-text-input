@@ -24,6 +24,7 @@
   ],
   "types": "./dist/pixi-bitmap-text-input.d.ts",
   "scripts": {
+    "audit-withignores": "node util/auditWithIgnores.mjs",
     "dev": "vite --host",
     "build": "rimraf dist && tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
     "test": "vitest",

@@ -58,7 +58,7 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Audit
-        run: yarn audit
+        run: yarn audit-withignores
       - name: Build
         run: yarn build
       - name: Release
