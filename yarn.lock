@@ -1461,10 +1461,10 @@
     loupe "^2.3.7"
     pretty-format "^29.7.0"
 
-"@vitest/web-worker@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@vitest/web-worker/-/web-worker-1.2.2.tgz#b9d20e5a30e99bc6608a94088a3bb78fa00a84a4"
-  integrity sha512-nDHsEE8s+e32PPKJOP+HR/X658ja+BZ1dC9y2jfX8+qiuuN/HSc6KiWrnBHZaLEuKMS0XAEjaIWsbzo0oneSsw==
+"@vitest/web-worker@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@vitest/web-worker/-/web-worker-1.3.0.tgz#37f50d6bc6ecabaa5ed54493ca6b7aff1264956e"
+  integrity sha512-h4AZNMAiD7cX3TVeeXgaeY59cvDETNRpe5sMT8WDigriJXfMvK6RD+HCqEiK4Y0omhanc8hXh1yemkeFrFIo1w==
   dependencies:
     debug "^4.3.4"
 
