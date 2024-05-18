@@ -51,6 +51,24 @@ export class BitmapTextInput extends PIXI.Container {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
 
+    if (bitmapTextStyle.maxWidth !== undefined && !options.multiline) {
+      // By default `maxWidth` causes text to wrap, but we want to clip it (to match DOM element behavior).
+      // To do this, we create a mask that clips the text and remove `maxWidth`.
+      this.bitmapText.maxWidth = 0;
+      this.bitmapTextMask = new PIXI.Graphics();
+      this.bitmapTextMask.beginFill(0xffffff);
+      this.bitmapTextMask.drawRect(
+        0,
+        0,
+        bitmapTextStyle.maxWidth,
+        this.bitmapText.maxLineHeight
+      );
+      this.bitmapTextMask.endFill();
+      this.addChild(this.bitmapTextMask);
+
+      this.bitmapText.mask = this.bitmapTextMask;
+    }
+
     // Blur by default
     this.onBlurred();
 
@@ -170,4 +188,5 @@ export class BitmapTextInput extends PIXI.Container {
     | undefined;
   private lastKnownVisible: boolean | undefined;
   private options: IBitmapTextInputOptions;
+  private bitmapTextMask: PIXI.Graphics | undefined;
 }
