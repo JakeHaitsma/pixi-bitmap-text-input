@@ -1,9 +1,29 @@
 import * as PIXI from "pixi.js";
 
 interface IBitmapTextInputOptions {
+  /**
+   * Whether the text input and corresponding DOM input should be multiline.
+   * When `true` the underlying DOM element type is a `textarea`, otherwise it is an `input`.
+   */
   multiline?: boolean;
+
+  /**
+   * A callback to fire when the DOM input receives a key down event.
+   * @param event The keyboard event associated with the keypress.
+   */
   onKeyDown?: (event: KeyboardEvent) => void;
+
+  /**
+   * A callback to fire when the DOM input receives a key up event.
+   * @param event The keyboard event associated with the keypress.
+   */
   onKeyUp?: (event: KeyboardEvent) => void;
+
+  /**
+   * A list of available Font characters, used for sizing the bitmap text container.
+   * Defaults to English alphanumerics.
+   */
+  alphabet?: string;
 }
 
 export class BitmapTextInput extends PIXI.Container {
@@ -54,6 +74,14 @@ export class BitmapTextInput extends PIXI.Container {
     if (bitmapTextStyle.maxWidth !== undefined && !options.multiline) {
       // By default `maxWidth` causes text to wrap, but we want to clip it (to match DOM element behavior).
       // To do this, we create a mask that clips the text and remove `maxWidth`.
+      const text = this.bitmapText.text;
+
+      // PIXI does not guarantee we'll have loaded the Font at this point, and BitmapText._font is internal.
+      // We could potentially use an alphabet from `_font.chars.map(String.fromCharCode)`. For now, allow consumers
+      // to provide a character set for sizing and fall back to English alphanumerics.
+      this.bitmapText.text =
+        options.alphabet ??
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       this.bitmapText.maxWidth = 0;
       this.bitmapTextMask = new PIXI.Graphics();
       this.bitmapTextMask.beginFill(0xffffff);
@@ -67,6 +95,7 @@ export class BitmapTextInput extends PIXI.Container {
       this.addChild(this.bitmapTextMask);
 
       this.bitmapText.mask = this.bitmapTextMask;
+      this.bitmapText.text = text;
     }
 
     // Blur by default
