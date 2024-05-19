@@ -133,6 +133,7 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.addEventListener("blur", this.onBlurred);
     this.domInput.addEventListener("keydown", this.onKeyDown);
     this.domInput.addEventListener("keyup", this.onKeyUp);
+    PIXI.Ticker.shared.add(this.checkWorldVisible, this);
   }
 
   private removeListeners() {
@@ -143,6 +144,7 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.removeEventListener("blur", this.onBlurred);
     this.domInput.removeEventListener("keydown", this.onKeyDown);
     this.domInput.removeEventListener("keyup", this.onKeyUp);
+    PIXI.Ticker.shared.remove(this.checkWorldVisible, this);
   }
 
   private onKeyDown(event: Event) {
@@ -181,6 +183,10 @@ export class BitmapTextInput extends PIXI.Container {
       this.onBoundsChanged();
     }
 
+    this.checkWorldVisible();
+  }
+
+  private checkWorldVisible() {
     if (this.worldVisible !== this.lastKnownVisible) {
       this.domInput.style.display = this.worldVisible ? "block" : "none";
       this.lastKnownVisible = this.worldVisible;
