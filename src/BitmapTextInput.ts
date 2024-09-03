@@ -24,11 +24,16 @@ interface IBitmapTextInputOptions {
    * Defaults to English alphanumerics.
    */
   alphabet?: string;
+
+  /**
+   * The maximum number of characters allowed in the input.
+   */
+  maxLength?: number;
 }
 
 export class BitmapTextInput extends PIXI.Container {
   constructor(
-    text: string,
+    initialText: string,
     {
       bitmapTextStyle = {},
       domInputStyle = {},
@@ -43,6 +48,7 @@ export class BitmapTextInput extends PIXI.Container {
 
     this.options = options;
 
+    const text = this.processText(initialText);
     this.bitmapText = new PIXI.BitmapText(text, bitmapTextStyle);
     this.addChild(this.bitmapText);
 
@@ -50,6 +56,9 @@ export class BitmapTextInput extends PIXI.Container {
       ? document.createElement("textarea")
       : document.createElement("input");
     this.domInput.value = text;
+    if (options.maxLength !== undefined) {
+      this.domInput.maxLength = options.maxLength;
+    }
     this.domInput.style.position = "absolute";
     this.domInput.style.width =
       (bitmapTextStyle.maxWidth ?? this.bitmapText.width) + "px";
@@ -104,9 +113,18 @@ export class BitmapTextInput extends PIXI.Container {
     this.addListeners();
   }
 
+  private processText(text: string) {
+    return this.options.maxLength !== undefined &&
+      text.length > this.options.maxLength
+      ? text.slice(0, this.options.maxLength)
+      : text;
+  }
+
   public set text(value: string) {
-    this.domInput.value = value;
-    this.bitmapText.text = value;
+    const text = this.processText(value);
+
+    this.domInput.value = text;
+    this.bitmapText.text = text;
   }
 
   public set inert(value: boolean) {

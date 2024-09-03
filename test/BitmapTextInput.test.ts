@@ -26,4 +26,43 @@ describe("BitmapTextInput", () => {
     });
     expect(bitmapTextInput).toBeDefined();
   });
+
+  it("truncates text from initial value", () => {
+    const { font: fontName } = PIXI.BitmapFont.install(
+      fontXML,
+      PIXI.Texture.EMPTY
+    );
+    const initialText = "Lorem ipsum dolor sit amet.";
+    const maxLength = 5;
+    const bitmapTextInput = new BitmapTextInput(initialText, {
+      bitmapTextStyle: {
+        fontName,
+      },
+      options: {
+        maxLength: 5,
+      },
+    });
+
+    expect(bitmapTextInput.text).toBe(initialText.slice(0, maxLength));
+  });
+
+  it("truncates text exceeding max length when set directly", () => {
+    const { font: fontName } = PIXI.BitmapFont.install(
+      fontXML,
+      PIXI.Texture.EMPTY
+    );
+    const maxLength = 5;
+    const bitmapTextInput = new BitmapTextInput("", {
+      bitmapTextStyle: {
+        fontName,
+      },
+      options: {
+        maxLength,
+      },
+    });
+
+    const initialText = "Lorem ipsum dolor sit amet.";
+    bitmapTextInput.text = initialText;
+    expect(bitmapTextInput.text).toBe(initialText.slice(0, maxLength));
+  });
 });
