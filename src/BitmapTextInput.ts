@@ -20,6 +20,16 @@ interface IBitmapTextInputOptions {
   onKeyUp?: (event: KeyboardEvent) => void;
 
   /**
+   * A callback to fire when the DOM input receives focus.
+   */
+  onFocus?: () => void;
+
+  /**
+   * A callback to fire when the DOM input loses focus.
+   */
+  onBlur?: () => void;
+
+  /**
    * A list of available Font characters, used for sizing the bitmap text container.
    * Defaults to English alphanumerics.
    */
@@ -185,11 +195,19 @@ export class BitmapTextInput extends PIXI.Container {
   private onFocused() {
     this.bitmapText.visible = false;
     this.domInput.style.opacity = "1";
+
+    if (typeof this.options.onFocus === "function") {
+      this.options.onFocus();
+    }
   }
 
   private onBlurred() {
     this.bitmapText.visible = true;
     this.domInput.style.opacity = "0";
+
+    if (typeof this.options.onBlur === "function") {
+      this.options.onBlur();
+    }
   }
 
   render(renderer: PIXI.Renderer): void {
