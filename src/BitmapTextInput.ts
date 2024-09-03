@@ -33,7 +33,7 @@ interface IBitmapTextInputOptions {
 
 export class BitmapTextInput extends PIXI.Container {
   constructor(
-    text: string,
+    initialText: string,
     {
       bitmapTextStyle = {},
       domInputStyle = {},
@@ -48,6 +48,7 @@ export class BitmapTextInput extends PIXI.Container {
 
     this.options = options;
 
+    const text = this.processText(initialText);
     this.bitmapText = new PIXI.BitmapText(text, bitmapTextStyle);
     this.addChild(this.bitmapText);
 
@@ -112,15 +113,18 @@ export class BitmapTextInput extends PIXI.Container {
     this.addListeners();
   }
 
-  public set text(value: string) {
-    const truncatedValue =
-      this.options.maxLength !== undefined &&
-      value.length > this.options.maxLength
-        ? value.slice(0, this.options.maxLength)
-        : value;
+  private processText(text: string) {
+    return this.options.maxLength !== undefined &&
+      text.length > this.options.maxLength
+      ? text.slice(0, this.options.maxLength)
+      : text;
+  }
 
-    this.domInput.value = truncatedValue;
-    this.bitmapText.text = truncatedValue;
+  public set text(value: string) {
+    const text = this.processText(value);
+
+    this.domInput.value = text;
+    this.bitmapText.text = text;
   }
 
   public set inert(value: boolean) {
