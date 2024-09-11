@@ -7,3 +7,5 @@ A PIXI.BitmapText DOM surrogate written in Typescript for native, accessible tex
 Compatible with PixiJS 8.
 
 _For PixiJS 5-7, use version 1.x._
+
+Dummy change.
