@@ -33,7 +33,7 @@ jobs:
         run: yarn build
 
       - name: Test
-        run: yarn test
+        run: yarn test --coverage
 
       - name: Report Coverage
         if: always()
