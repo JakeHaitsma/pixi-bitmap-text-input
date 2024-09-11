@@ -1,53 +1,55 @@
-import * as PIXI from "pixi.js";
+import { Application, Assets } from "pixi.js";
 import { BitmapTextInput } from "../src/index";
 
 async function init() {
-  await PIXI.Assets.load("./fonts/Foxley816/bitmap/Foxley816.fnt");
+  await Assets.load("./fonts/Foxley816/bitmap/Foxley816.fnt");
 
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
 
-  const app = new PIXI.Application({
+  const app = new Application();
+  await app.init({
     backgroundColor: "#02040a",
     antialias: true,
     resolution: 1,
-    view: canvas,
+    canvas,
   });
 
-  const bitmapTextInput = new BitmapTextInput("Lorem ipsum dolor sit amet.", {
-    bitmapTextStyle: {
-      fontName: "Foxley816",
-      maxWidth: 300,
+  const bitmapTextInput = new BitmapTextInput(
+    {
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a magna nec ante rutrum varius. Pellentesque congue finibus nibh sed tincidunt.",
+      style: {
+        fontFamily: "Foxley816",
+        fontSize: 16,
+        wordWrap: true,
+        wordWrapWidth: 300,
+      },
+      domNodeOffset: { x: -1, y: 2 },
     },
-    domInputStyle: {
-      color: "white",
-      fontFamily: "'Foxley 816'",
-      fontSize: "16px",
-      lineHeight: "16px",
-      marginTop: "-5px",
-    },
-  });
-  bitmapTextInput.x = Math.round(150);
-  bitmapTextInput.y = Math.round(150);
+    canvas
+  );
+  bitmapTextInput.domNode.style.fontFamily = "'Foxley 816'";
+  bitmapTextInput.domNode.style.color = "white";
 
-  let dx = 1;
-  let dy = 1;
+  // DVD screensaver effect
+  let deltaX = 1;
+  let deltaY = 1;
   app.ticker.add(() => {
-    bitmapTextInput.x += dx;
-    bitmapTextInput.y += dy;
+    bitmapTextInput.x += deltaX;
+    bitmapTextInput.y += deltaY;
 
     if (
       bitmapTextInput.x < 0 ||
       bitmapTextInput.x > app.screen.width - bitmapTextInput.width
     ) {
-      dx *= -1;
+      deltaX *= -1;
     }
 
     if (
       bitmapTextInput.y < 0 ||
       bitmapTextInput.y > app.screen.height - bitmapTextInput.height
     ) {
-      dy *= -1;
+      deltaY *= -1;
     }
   });
 

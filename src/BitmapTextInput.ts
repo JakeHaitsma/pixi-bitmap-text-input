@@ -1,85 +1,29 @@
-import * as PIXI from "pixi.js";
+import { BitmapText, Graphics, TextOptions, Ticker } from "pixi.js";
 
-interface IBitmapTextInputOptions {
-  /**
-   * Whether the text input and corresponding DOM input should be multiline.
-   * When `true` the underlying DOM element type is a `textarea`, otherwise it is an `input`.
-   */
-  multiline?: boolean;
-
-  /**
-   * A callback to fire when the DOM input receives a key down event.
-   * @param event The keyboard event associated with the keypress.
-   */
-  onKeyDown?: (event: KeyboardEvent) => void;
-
-  /**
-   * A callback to fire when the DOM input receives a key up event.
-   * @param event The keyboard event associated with the keypress.
-   */
-  onKeyUp?: (event: KeyboardEvent) => void;
-
-  /**
-   * A callback to fire when the DOM input receives focus.
-   */
-  onFocus?: () => void;
-
-  /**
-   * A callback to fire when the DOM input loses focus.
-   */
-  onBlur?: () => void;
-
-  /**
-   * A list of available Font characters, used for sizing the bitmap text container.
-   * Defaults to English alphanumerics.
-   */
-  alphabet?: string;
-
-  /**
-   * The maximum number of characters allowed in the input.
-   */
+export interface IBitmapTextInputOptions extends TextOptions {
+  domNodeOffset?: { x: number; y: number };
+  maxWidth?: number;
+  maxHeight?: number;
   maxLength?: number;
+  ticker?: Ticker;
 }
 
-export class BitmapTextInput extends PIXI.Container {
+export class BitmapTextInput extends BitmapText {
   constructor(
-    initialText: string,
-    {
-      bitmapTextStyle = {},
-      domInputStyle = {},
-      options = {},
-    }: {
-      bitmapTextStyle?: Partial<PIXI.IBitmapTextStyle & { multiline: boolean }>;
-      domInputStyle?: Partial<CSSStyleDeclaration>;
-      options?: IBitmapTextInputOptions;
-    } = {}
+    private options: IBitmapTextInputOptions,
+    private canvas?: HTMLCanvasElement
   ) {
-    super();
+    super(options);
 
-    this.options = options;
+    this.onRender = this.handleRender.bind(this);
+    this.ticker = options.ticker ?? Ticker.shared;
 
-    const text = this.processText(initialText);
-    this.bitmapText = new PIXI.BitmapText(text, bitmapTextStyle);
-    this.addChild(this.bitmapText);
+    const isMultiline = options.style?.wordWrap ?? false;
 
-    this.domInput = options.multiline
+    this.domInput = isMultiline
       ? document.createElement("textarea")
       : document.createElement("input");
-    this.domInput.value = text;
-    if (options.maxLength !== undefined) {
-      this.domInput.maxLength = options.maxLength;
-    }
-    this.domInput.style.position = "absolute";
-    this.domInput.style.width =
-      (bitmapTextStyle.maxWidth ?? this.bitmapText.width) + "px";
-    this.domInput.style.border = "none";
-    this.domInput.style.padding = "0";
-    this.domInput.style.margin = "0";
-    this.domInput.style.outline = "none";
-    this.domInput.style.background = "none";
-    this.domInput.style.resize = "none";
-    this.domInput.style.overflow = "hidden";
-    Object.assign(this.domInput.style, domInputStyle);
+    this.domInput.value = options.text?.toString() ?? "";
 
     // Bind events before adding listeners so listeners can be cleaned by reference on destroy.
     this.onAdded = this.onAdded.bind(this);
@@ -87,65 +31,41 @@ export class BitmapTextInput extends PIXI.Container {
     this.onInput = this.onInput.bind(this);
     this.onFocused = this.onFocused.bind(this);
     this.onBlurred = this.onBlurred.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
 
-    if (bitmapTextStyle.maxWidth !== undefined && !options.multiline) {
-      // By default `maxWidth` causes text to wrap, but we want to clip it (to match DOM element behavior).
-      // To do this, we create a mask that clips the text and remove `maxWidth`.
-      const text = this.bitmapText.text;
-
-      // PIXI does not guarantee we'll have loaded the Font at this point, and BitmapText._font is internal.
-      // We could potentially use an alphabet from `_font.chars.map(String.fromCharCode)`. For now, allow consumers
-      // to provide a character set for sizing and fall back to English alphanumerics.
-      this.bitmapText.text =
-        options.alphabet ??
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      this.bitmapText.maxWidth = 0;
-      this.bitmapTextMask = new PIXI.Graphics();
-      this.bitmapTextMask.beginFill(0xffffff);
-      this.bitmapTextMask.drawRect(
-        0,
-        0,
-        bitmapTextStyle.maxWidth,
-        this.bitmapText.maxLineHeight
-      );
-      this.bitmapTextMask.endFill();
-      this.addChild(this.bitmapTextMask);
-
-      this.bitmapText.mask = this.bitmapTextMask;
-      this.bitmapText.text = text;
-    }
-
-    // Blur by default
+    // Blur DOM input by default
     this.onBlurred();
+
+    if (options.maxWidth !== undefined || options.maxHeight !== undefined) {
+      this.mask = new Graphics()
+        .rect(0, 0, options.maxWidth ?? 9999, options.maxHeight ?? 9999)
+        .fill(0xffffff);
+    }
 
     this.addListeners();
   }
 
-  private processText(text: string) {
-    return this.options.maxLength !== undefined &&
-      text.length > this.options.maxLength
-      ? text.slice(0, this.options.maxLength)
-      : text;
+  public get domNode() {
+    return this.domInput;
+  }
+
+  public get text() {
+    return super.text;
   }
 
   public set text(value: string) {
-    const text = this.processText(value);
-
-    this.domInput.value = text;
-    this.bitmapText.text = text;
+    super.text = value;
+    if (this.domInput) {
+      this.domInput.value = value;
+    }
   }
 
   public set inert(value: boolean) {
     this.domInput.inert = value;
-    if (value) {
-      this.onBlurred();
-    }
+    this.onBlurred();
   }
 
-  public get text() {
-    return this.domInput.value;
+  public get inert() {
+    return this.domInput.inert;
   }
 
   public destroy() {
@@ -159,9 +79,7 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.addEventListener("input", this.onInput);
     this.domInput.addEventListener("focus", this.onFocused);
     this.domInput.addEventListener("blur", this.onBlurred);
-    this.domInput.addEventListener("keydown", this.onKeyDown);
-    this.domInput.addEventListener("keyup", this.onKeyUp);
-    PIXI.Ticker.shared.add(this.checkWorldVisible, this);
+    this.ticker.add(this.checkWorldVisible, this);
   }
 
   private removeListeners() {
@@ -170,78 +88,89 @@ export class BitmapTextInput extends PIXI.Container {
     this.domInput.removeEventListener("input", this.onInput);
     this.domInput.removeEventListener("focus", this.onFocused);
     this.domInput.removeEventListener("blur", this.onBlurred);
-    this.domInput.removeEventListener("keydown", this.onKeyDown);
-    this.domInput.removeEventListener("keyup", this.onKeyUp);
-    PIXI.Ticker.shared.remove(this.checkWorldVisible, this);
-  }
-
-  private onKeyDown(event: Event) {
-    if (typeof this.options.onKeyDown === "function") {
-      this.options.onKeyDown(event as KeyboardEvent);
-    }
-  }
-
-  private onKeyUp(event: Event) {
-    if (typeof this.options.onKeyUp === "function") {
-      this.options.onKeyUp(event as KeyboardEvent);
-    }
+    this.ticker.remove(this.checkWorldVisible, this);
   }
 
   private onInput() {
-    this.bitmapText.text = this.domInput.value;
+    this.text = this.domInput.value;
     this.onBoundsChanged();
   }
 
   private onFocused() {
-    this.bitmapText.visible = false;
+    this.alpha = 0;
     this.domInput.style.opacity = "1";
-
-    if (typeof this.options.onFocus === "function") {
-      this.options.onFocus();
-    }
   }
 
   private onBlurred() {
-    this.bitmapText.visible = true;
+    this.alpha = 1;
     this.domInput.style.opacity = "0";
-
-    if (typeof this.options.onBlur === "function") {
-      this.options.onBlur();
-    }
   }
 
-  render(renderer: PIXI.Renderer): void {
-    super.render(renderer);
-
-    const canvasBounds = renderer.view.getBoundingClientRect?.();
-    if (canvasBounds) {
-      this.canvasBoundingRect = this.calculateCanvasBounds(canvasBounds);
-      this.onBoundsChanged();
-    }
-
+  handleRender() {
+    this.onBoundsChanged();
     this.checkWorldVisible();
   }
 
   private checkWorldVisible() {
-    if (this.worldVisible !== this.lastKnownVisible) {
-      this.domInput.style.display = this.worldVisible ? "block" : "none";
-      this.lastKnownVisible = this.worldVisible;
+    const isWorldVisible = this.isWorldVisible();
+    if (isWorldVisible !== this.lastKnownVisible) {
+      console.log("isWorldVisible", isWorldVisible);
+      this.domInput.style.display = isWorldVisible ? "block" : "none";
+      this.lastKnownVisible = isWorldVisible;
     }
   }
 
-  private calculateCanvasBounds(bounds: PIXI.ICanvasRect) {
-    const { x, y, width, height } = bounds;
-
-    return { left: x + window.scrollX, top: y + window.scrollY, width, height };
+  /**
+   * globalDisplayStatus holds three bits: culled, visible, renderable:
+   *
+   * - the third bit represents culling (0 = culled, 1 = not culled) 0b100
+   * - the second bit represents visibility (0 = not visible, 1 = visible) 0b010
+   * - the first bit represents renderable (0 = not renderable, 1 = renderable) 0b001
+   *
+   * This function checks the second bit to see if the object is visible
+   */
+  private isWorldVisible() {
+    return (this.globalDisplayStatus & 0b10) !== 0;
   }
 
+  /**
+   * Adjusts the DOM input position to match the BitmapText position.
+   */
   private onBoundsChanged() {
-    if (!this.canvasBoundingRect) return;
+    const { left: canvasLeft, top: canvasTop } = this.canvas
+      ? this.canvas.getBoundingClientRect()
+      : { left: 0, top: 0 };
 
-    const { left: canvasLeft, top: canvasTop } = this.canvasBoundingRect;
-    const { x: bitmapTextLeft, y: bitmapTextTop } = this.bitmapText.getBounds();
-    this.domInput.style.left = `${canvasLeft + bitmapTextLeft}px`;
-    this.domInput.style.top = `${canvasTop + bitmapTextTop}px`;
+    const bounds = this.getBounds();
+    const { width: bitmapTextWidth, height: bitmapTextHeight } = bounds;
+
+    const { x: bitmapTextLeft, y: bitmapTextTop } = this.getGlobalPosition();
+    const domOffsetX = this.options.domNodeOffset?.x ?? 0;
+    const domOffsetY = this.options.domNodeOffset?.y ?? 0;
+
+    this.domInput.style.left = `${canvasLeft + bitmapTextLeft + domOffsetX}px`;
+    this.domInput.style.top = `${canvasTop + bitmapTextTop + domOffsetY}px`;
+    this.domInput.style.width = `${bitmapTextWidth}px`;
+    this.domInput.style.height = `${bitmapTextHeight}px`;
+    this.domInput.style.position = "absolute";
+    this.domInput.style.border = "none";
+    this.domInput.style.padding = "0";
+    this.domInput.style.margin = "0";
+    this.domInput.style.outline = "none";
+    this.domInput.style.background = "none";
+    this.domInput.style.resize = "none";
+    this.domInput.style.overflow = "hidden";
+    if (this.options.style?.fontSize) {
+      const fontSize =
+        typeof this.options.style.fontSize === "number"
+          ? `${this.options.style.fontSize}px`
+          : this.options.style.fontSize;
+      this.domInput.style.fontSize = fontSize;
+    }
+    if (this.options.style?.wordWrapWidth !== undefined) {
+      this.domInput.style.minWidth = `${this.options.style.wordWrapWidth}px`;
+      this.domInput.style.maxWidth = `${this.options.style.wordWrapWidth}px`;
+    }
   }
 
   private onAdded() {
@@ -252,12 +181,7 @@ export class BitmapTextInput extends PIXI.Container {
     document.body.removeChild(this.domInput);
   }
 
-  private bitmapText: PIXI.BitmapText;
   private domInput: HTMLInputElement | HTMLTextAreaElement;
-  private canvasBoundingRect:
-    | { left: number; top: number; width: number; height: number }
-    | undefined;
   private lastKnownVisible: boolean | undefined;
-  private options: IBitmapTextInputOptions;
-  private bitmapTextMask: PIXI.Graphics | undefined;
+  private ticker: Ticker;
 }
