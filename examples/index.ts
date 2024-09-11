@@ -1,5 +1,5 @@
 import { Application } from "pixi.js";
-import { BitmapTextInput } from "../src/index";
+import { BitmapTextInput } from "../src/BitmapTextInput";
 
 async function init() {
   const canvas = document.createElement("canvas");

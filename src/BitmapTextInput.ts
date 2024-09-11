@@ -106,7 +106,7 @@ export class BitmapTextInput extends BitmapText {
     this.domInput.style.opacity = "0";
   }
 
-  handleRender() {
+  private handleRender() {
     this.onBoundsChanged();
     this.checkWorldVisible();
   }

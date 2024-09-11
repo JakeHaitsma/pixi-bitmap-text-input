@@ -4,6 +4,7 @@ import {
   BitmapTextInput,
   IBitmapTextInputOptions,
 } from "../src/BitmapTextInput";
+import { BitmapTextInput as BitmapTextInputFromIndex } from "../src";
 import { Container, Graphics, Ticker } from "pixi.js";
 
 function getBitmapTextInput(
@@ -36,6 +37,10 @@ describe("BitmapTextInput", () => {
 
     expect(bitmapTextInput.text).toBe(text);
     expect(bitmapTextInput.domNode.value).toBe(text);
+  });
+
+  it("can be imported from index", () => {
+    expect(BitmapTextInputFromIndex).toBeDefined();
   });
 
   it("sets text value", () => {
@@ -75,6 +80,45 @@ describe("BitmapTextInput", () => {
     container.removeChild(bitmapTextInput);
 
     expect(document.body.contains(bitmapTextInput.domNode)).toBe(false);
+  });
+
+  it("creates textareas for multiline text", () => {
+    const bitmapTextInput = getBitmapTextInput({ style: { wordWrap: true } });
+
+    expect(bitmapTextInput.domNode).toBeInstanceOf(HTMLTextAreaElement);
+  });
+
+  it.each(["20px", 20])(
+    "sets DOM font size according to bitmap text style",
+    fontSize => {
+      const bitmapTextInput = getBitmapTextInput({
+        style: { fontSize },
+      });
+
+      trigger(bitmapTextInput);
+
+      expect(bitmapTextInput.domNode.style.fontSize).toBe("20px");
+    }
+  );
+
+  it("sets DOM node min and max widths based on word wrap width", () => {
+    const bitmapTextInput = getBitmapTextInput({
+      style: { wordWrap: true, wordWrapWidth: 100 },
+    });
+
+    trigger(bitmapTextInput);
+
+    expect(bitmapTextInput.domNode.style.minWidth).toBe("100px");
+    expect(bitmapTextInput.domNode.style.maxWidth).toBe("100px");
+  });
+
+  it("checks bounds on render", async () => {
+    const bitmapTextInput = getBitmapTextInput();
+    expect(bitmapTextInput.domNode.style.left).toBe("");
+
+    bitmapTextInput.onRender();
+
+    expect(bitmapTextInput.domNode.style.left).toBe("0px");
   });
 
   it("updates text value when input changes", () => {

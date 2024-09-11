@@ -43,5 +43,9 @@ module.exports = defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ['@vitest/web-worker'],
+    coverage: {
+      include: ['src/'],
+      reporter: ['text', 'html', 'clover', 'json', 'json-summary']
+    }
   }
 });
