@@ -32,13 +32,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build
-        run: yarn build
+        run: yarn build:pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./dist"
+          path: "./gh-pages-staging"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

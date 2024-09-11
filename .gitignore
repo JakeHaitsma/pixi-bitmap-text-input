@@ -13,6 +13,8 @@ dist-ssr
 *.local
 coverage
 
+gh-pages-staging
+
 # Editor directories and files
 .vscode/*
 .history/*

@@ -1,13 +1,3 @@
-@font-face {
-  font-family: "Foxley 816";
-  src:
-    url("./fonts/Foxley816/web/Foxley816.woff2") format("woff2"),
-    url("./fonts/Foxley816/web/Foxley816.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 body {
   background-color: #0d1116;
   color: #fff;

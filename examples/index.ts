@@ -1,9 +1,7 @@
-import { Application, Assets } from "pixi.js";
+import { Application } from "pixi.js";
 import { BitmapTextInput } from "../src/index";
 
 async function init() {
-  await Assets.load("./fonts/Foxley816/bitmap/Foxley816.fnt");
-
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);
 
@@ -19,16 +17,15 @@ async function init() {
     {
       text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a magna nec ante rutrum varius. Pellentesque congue finibus nibh sed tincidunt.",
       style: {
-        fontFamily: "Foxley816",
+        fontFamily: "Arial",
         fontSize: 16,
         wordWrap: true,
         wordWrapWidth: 300,
       },
-      domNodeOffset: { x: -1, y: 2 },
     },
     canvas
   );
-  bitmapTextInput.domNode.style.fontFamily = "'Foxley 816'";
+  bitmapTextInput.domNode.style.fontFamily = "Arial";
   bitmapTextInput.domNode.style.color = "white";
 
   // DVD screensaver effect
