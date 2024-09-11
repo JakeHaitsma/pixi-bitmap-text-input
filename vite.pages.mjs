@@ -6,8 +6,7 @@ const resolvePath = str => path.resolve(__dirname, str);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-//   base: "/pixi-bitmap-text-input/",
-  base: "/",
+  base: "/pixi-bitmap-text-input/",
   root: "examples",
   build: {
     outDir: resolvePath("gh-pages-staging"),
