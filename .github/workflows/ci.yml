@@ -27,7 +27,7 @@ jobs:
           cache: "yarn"
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
@@ -56,7 +56,7 @@ jobs:
           node-version: 20
           cache: "yarn"
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
       - name: Audit
         run: yarn audit-withignores
       - name: Build

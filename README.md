@@ -2,4 +2,6 @@
 
 A PIXI.BitmapText DOM surrogate written in Typescript for native, accessible text input while maintaining pixel-perfect precision.
 
-Compatible with PixiJS 5+.
+Compatible with PixiJS 8.
+
+_For PixiJS 5-7, use version 1.x._
