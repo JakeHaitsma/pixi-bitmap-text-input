@@ -114,7 +114,6 @@ export class BitmapTextInput extends BitmapText {
   private checkWorldVisible() {
     const isWorldVisible = this.isWorldVisible();
     if (isWorldVisible !== this.lastKnownVisible) {
-      console.log("isWorldVisible", isWorldVisible);
       this.domInput.style.display = isWorldVisible ? "block" : "none";
       this.lastKnownVisible = isWorldVisible;
     }
