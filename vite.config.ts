@@ -24,7 +24,7 @@ const fileName = {
 const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
 
 module.exports = defineConfig({
-  base: "./",
+  base: "/pixi-bitmap-text-input/",
   server: {
     open: './examples/index.html',
     port: 7777,
