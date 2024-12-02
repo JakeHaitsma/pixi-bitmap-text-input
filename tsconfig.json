@@ -16,7 +16,8 @@
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["vite/client", "node"],
+    "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["**/*.test.ts", "node_modules", "test/**", ".history/**"],
+  "exclude": ["**/*.test.ts", "node_modules", "test/**", ".history/**"]
 }
