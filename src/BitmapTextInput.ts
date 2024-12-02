@@ -36,9 +36,11 @@ export class BitmapTextInput extends BitmapText {
     this.onBlurred();
 
     if (options.maxWidth !== undefined || options.maxHeight !== undefined) {
-      this.mask = new Graphics()
+      const mask = new Graphics()
         .rect(0, 0, options.maxWidth ?? 9999, options.maxHeight ?? 9999)
         .fill(0xffffff);
+      this.addChild(mask);
+      this.mask = mask;
     }
 
     this.addListeners();
