@@ -58,7 +58,7 @@
     "husky": "^9.0.7",
     "jsdom": "^25.0.1",
     "lint-staged": "^15.2.0",
-    "pixi.js": "^8.3.0",
+    "pixi.js": "^8.6.4",
     "postcss": "^8.4.35",
     "postcss-scss": "^4.0.9",
     "prettier": "^3.2.5",
